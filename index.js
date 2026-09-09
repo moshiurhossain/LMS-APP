@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const globalErrorHandler = require("./helpers/globalErrorHandler")
 const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
@@ -12,6 +13,10 @@ app.use('/', require('./router'))
 
 
 
+
+
+// Global Error Handler
+app.use(globalErrorHandler)
 // listening to the server
 app.listen(PORT, (err) => {
     if (err) {
