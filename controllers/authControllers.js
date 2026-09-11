@@ -43,5 +43,30 @@ const signupController = asyncHandler(async (req,res)=>{
     apiResponse(res, 200, "Signup successful", user)
 })
 
+// verify otp controller
+const verifyOtpController = asyncHandler(async (req,res)=>{
+    const {email, otp} = req.body
+    // existing user
+    const existingUser = await userSchema.findOne({email})
+    // if the user does not exist, return an error response
+    if(!existingUser) return apiResponse(res, 400, "User does not exist", null)
+    // check if the otp is valid
+    const currentTime = new Date()
+    if(currentTime > existingUser.otp_expiry) {
+        return apiResponse(res, 400, "OTP has expired", null)
+    }
+    if(existingUser.otp != otp) {
+        return apiResponse(res, 400, "Invalid OTP", null)
+    }
+    // mark the user as verified
+    if(existingUser.isVerified == true) return apiResponse(res, 400, "User already verified", null)
+    existingUser.isVerified = true
+    await existingUser.save()
+    // return a success response
+    apiResponse(res, 200, "OTP verified successfully",existingUser)
+})
+
+
+
 // all exports
-module.exports = {loginController, signupController}
+module.exports = {loginController, signupController, verifyOtpController}
