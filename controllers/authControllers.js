@@ -2,14 +2,41 @@ const apiResponse  = require('../helpers/apiResponse')
 const asyncHandler = require('../helpers/asyncHandler')
 const otpTemplate = require('../helpers/otpTemplete')
 const sendEmail = require('../helpers/sendEmail')
-const bcrypt = require('bcrypt')
-const {generateOtp,otpExpiryTime} = require('../helpers/allGenerators')
 const userSchema = require('../models/userSchema')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+const {generateOtp,otpExpiryTime} = require('../helpers/allGenerators')
+
+
 // login controller
 const loginController = asyncHandler(async (req,res)=>{
-
+    // get the user data from request body
+    const {email,password} = req.body
+    // logic to check if the user exists
+    const existingUser = await userSchema.findOne({email})
+    // if the user does not exist, return an error response
+    if(!existingUser) return apiResponse(res, 400, "User does not exist", null)
+    // decrypt the password and compare it with the existing user's password 
+    const isPasswordValid = await bcrypt.compare(password, existingUser.password)   
+    // if the password is not valid, return an error response
+    if(!isPasswordValid) return apiResponse(res, 400, "Invalid password", null) 
+    // create a user data object to send in the response
+    const userData = {
+        id: existingUser._id,
+        name: existingUser.name,
+        email: existingUser.email,
+        phone: existingUser.phone,
+        isVerified: existingUser.isVerified,
+        role: existingUser.role,
+    }
+    // create a token for the user
+    const accesstoken = jwt.sign(userData, process.env.PRIVATE_KEY, {expiresIn: '1h'})
+    // set cookie with the token
+    res.cookie('accesstoken', accesstoken, {maxAge:360000})
     
-    apiResponse(res, 200, "Login successful", null)
+
+    // return a success response
+    apiResponse(res, 200, "Login successful", {...userData,accesstoken})
 } )
 
 // signup controller
