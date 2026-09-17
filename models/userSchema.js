@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
         type:Boolean,
         default:false
     },
-        forgetPasswordOtp:{
+    forgetPasswordOtp:{
         type:String,
         default:null,
     },

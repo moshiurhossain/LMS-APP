@@ -1,5 +1,5 @@
 const express = require("express");
-const { loginController, signupController, verifyOtpController,getAllUsersController, resendOtpController } = require("../../controllers/authControllers");
+const { loginController, signupController, verifyOtpController,getAllUsersController, resendOtpController, forgotPasswordController } = require("../../controllers/authControllers");
 const authorizemiddleware = require("../../middlewares/authorize");
 const router = express.Router();
 // http://localhost:8080/api/v1/auth/login
@@ -12,4 +12,6 @@ router.post('/verifyotp', verifyOtpController)
 router.get('/getallusers',authorizemiddleware ,getAllUsersController)
 // http://localhost:8080/api/v1/auth/resendotp
 router.post('/resendotp', resendOtpController)
+// http://localhost:8080/api/v1/auth/forgotpassword
+router.post('/forgotpassword', forgotPasswordController)
 module.exports = router;

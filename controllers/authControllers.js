@@ -120,6 +120,28 @@ const getAllUsersController = asyncHandler(async (req,res)=>{
   apiResponse(res, 200, "All users fetched successfully", users)
 })
 //////////////////////////////////////////////////////////
-
+//forgot password controller
+const forgotPasswordController = asyncHandler(async (req,res)=>{
+    // get the user data from request body
+    const {email} = req.body
+    // if the user does not exist, return an error response
+    if(!email) return apiResponse(res, 400, "Email is required", null)
+    // existing user
+    const existingUser = await userSchema.findOne({email})
+    // if the user does not exist, return an error response
+    if(!existingUser) return apiResponse(res, 400, "User does not exist", null)
+    // generate new otp and set reset link
+    const resetLink = 'http://localhost:3000/reset-password' 
+    const forgetPasswordOtp = generateOtp()    
+    // send the otp to the user's email
+    sendEmail(email, 'Forgot Password', resetPasswordTemplate(existingUser.name, resetLink, forgetPasswordOtp, '10 minutes'))
+    // update the user's forgetPasswordOtp and forgetPasswordOtpExpiry fields 
+    existingUser.forgetPasswordOtp = forgetPasswordOtp
+    existingUser.forgetPasswordOtpExpiry = otpExpiryTime()
+    await existingUser.save()
+    // return a success response
+    apiResponse(res, 200, "Forgot password controller", null)
+})
+//////////////////////////////////////////////////////////
 // all exports
-module.exports = {loginController, signupController, verifyOtpController, getAllUsersController,resendOtpController}
+module.exports = {loginController, signupController, verifyOtpController, getAllUsersController,resendOtpController, forgotPasswordController}
