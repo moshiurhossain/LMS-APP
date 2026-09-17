@@ -143,5 +143,32 @@ const forgotPasswordController = asyncHandler(async (req,res)=>{
     apiResponse(res, 200, "Forgot password controller", null)
 })
 //////////////////////////////////////////////////////////
+// reset password controller
+const resetPasswordController = asyncHandler(async (req,res)=>{
+    // get the user data from request body
+    const {email, password, forgetPasswordOtp} = req.body
+    // return error if any of the fields are missing
+    if(!email || !password || !forgetPasswordOtp) return apiResponse(res, 400, "All fields are required", null)
+    // existing user
+    const existingUser = await userSchema.findOne({email})
+    // if the user does not exist, return an error response
+    if(!existingUser) return apiResponse(res, 400, "User does not exist", null)
+    //check if the otp is valid
+    if(existingUser.forgetPasswordOtp != forgetPasswordOtp) return apiResponse(res, 400, "Invalid OTP", null)
+    // check if the otp has expired
+    const currentTime = new Date()
+    if(currentTime > existingUser.forgetPasswordOtpExpiry) return apiResponse(res, 400, "OTP has expired", null) 
+    // encrypt the new password
+    const hashedPassword = await bcrypt.hash(password, 10)
+    // update the user's password and reset the forgetPasswordOtp and forgetPasswordOtpExpiry fields
+    existingUser.password = hashedPassword
+    existingUser.forgetPasswordOtp = null
+    existingUser.forgetPasswordOtpExpiry = null
+    await existingUser.save()
+
+    
+    // return a success response
+    apiResponse(res, 200, "Reset password controller", null)
+})
 // all exports
-module.exports = {loginController, signupController, verifyOtpController, getAllUsersController,resendOtpController, forgotPasswordController}
+module.exports = {loginController, signupController, verifyOtpController, getAllUsersController,resendOtpController, forgotPasswordController, resetPasswordController}
