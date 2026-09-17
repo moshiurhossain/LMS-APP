@@ -38,7 +38,7 @@ const loginController = asyncHandler(async (req,res)=>{
     // return a success response
     apiResponse(res, 200, "Login successful", {...userData,accesstoken})
 } )
-
+//////////////////////////////////////////////////////////
 // signup controller
 const signupController = asyncHandler(async (req,res)=>{
     // get the user data from request body
@@ -69,7 +69,7 @@ const signupController = asyncHandler(async (req,res)=>{
     // return a success response
     apiResponse(res, 200, "Signup successful", user)
 })
-
+//////////////////////////////////////////////////////////
 // verify otp controller
 const verifyOtpController = asyncHandler(async (req,res)=>{
     const {email, otp} = req.body
@@ -92,8 +92,34 @@ const verifyOtpController = asyncHandler(async (req,res)=>{
     // return a success response
     apiResponse(res, 200, "OTP verified successfully",existingUser)
 })
-
-
+//////////////////////////////////////////////////////////
+// resent otp controller
+const resendOtpController = asyncHandler(async (req,res)=>{
+    // get the user data from request body
+    const {email} = req.body
+    // existing user
+    const existingUser = await userSchema.findOne({email})
+    // if the user does not exist, return an error response
+    if(!existingUser) return apiResponse(res, 400, "User does not exist", null)
+    // sent error if the user is already verified 
+    if(existingUser.isVerified == true) return apiResponse(res, 400, "User already verified", null)
+    // generate new otp and expiry time
+    const otp = generateOtp()
+    existingUser.otp = otp
+    existingUser.otp_expiry = otpExpiryTime()
+    await existingUser.save()
+    // send the otp to the user's email
+    sendEmail(email,'OTP Verification',otpTemplate(existingUser.name, otp,'10 minutes'))
+    // return a success response
+    apiResponse (res, 200, "Resend OTP controller", null)
+})
+//////////////////////////////////////////////////////////
+// get all users controller
+const getAllUsersController = asyncHandler(async (req,res)=>{
+  const users = await userSchema.find()
+  apiResponse(res, 200, "All users fetched successfully", users)
+})
+//////////////////////////////////////////////////////////
 
 // all exports
-module.exports = {loginController, signupController, verifyOtpController}
+module.exports = {loginController, signupController, verifyOtpController, getAllUsersController,resendOtpController}
