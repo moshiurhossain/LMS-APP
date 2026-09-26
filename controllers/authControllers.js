@@ -6,6 +6,8 @@ const userSchema = require('../models/userSchema')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const {generateOtp,otpExpiryTime} = require('../helpers/allGenerators')
+const resetPasswordTemplate = require('../helpers/resetPasswordTemplete')
+
 
 
 // login controller
@@ -32,7 +34,12 @@ const loginController = asyncHandler(async (req,res)=>{
     // create a token for the user
     const accesstoken = jwt.sign(userData, process.env.PRIVATE_KEY, {expiresIn: '1h'})
     // set cookie with the token
-    res.cookie('accesstoken', accesstoken, {maxAge:360000})
+    res.cookie('accesstoken', accesstoken, {
+        maxAge:360000,
+            httpOnly: true,
+            secure: false, // true in production with HTTPS
+
+    })
     
 
     // return a success response
@@ -72,6 +79,7 @@ const signupController = asyncHandler(async (req,res)=>{
 //////////////////////////////////////////////////////////
 // verify otp controller
 const verifyOtpController = asyncHandler(async (req,res)=>{
+    
     const {email, otp} = req.body
     // existing user
     const existingUser = await userSchema.findOne({email})
@@ -170,5 +178,19 @@ const resetPasswordController = asyncHandler(async (req,res)=>{
     // return a success response
     apiResponse(res, 200, "Reset password controller", null)
 })
+//////////////////////////////////////////////////////////
+// Get user controller
+const GetUserController = asyncHandler(async (req,res)=>{
+    // console.log("THIS IS USER ID",res.user.id)
+    // get user by id
+    const user = await userSchema.findById(res.user.id)
+    // return error if user not found
+    if(!user) return apiResponse(res,400,'user not found ')
+
+
+
+    apiResponse(res,200,'User Fetchecd successfully',user)
+})
+
 // all exports
-module.exports = {loginController, signupController, verifyOtpController, getAllUsersController,resendOtpController, forgotPasswordController, resetPasswordController}
+module.exports = {loginController, signupController, verifyOtpController, getAllUsersController,resendOtpController, forgotPasswordController, resetPasswordController,GetUserController}
