@@ -11,9 +11,6 @@ const authorizemiddleware = (res, req, next) => {
    console.log(decode)
    req.user = decode
 
-
-
-   
    next()
 }
 
