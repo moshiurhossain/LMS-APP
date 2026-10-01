@@ -6,6 +6,10 @@ const courseSchema = new mongoose.Schema({
         required:[true, "Name is required"],
         trim: true,
     },
+    //   bannerImage: {
+    //     type: String,
+    //     required: [true, "Banner image is required"],
+    //   },
       description: {
         type: String,
         required:[true, "Description is required"],
@@ -19,7 +23,8 @@ const courseSchema = new mongoose.Schema({
       classes: [
         { 
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Class"
+            ref: "Class",
+            default: [],
         },
     ],
       slug:{
@@ -27,6 +32,12 @@ const courseSchema = new mongoose.Schema({
       required:[true,'Slug is required'],
       unique:[true,'Slug must be unique']
     },
+    subscribedUsers: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
+    ]
 },{timestamps: true,versionKey: false})
 
 module.exports = mongoose.model("Course", courseSchema);

@@ -47,6 +47,18 @@ const userSchema = new mongoose.Schema({
         type:Date,
         default:null
     },
+    suscribedCourses:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Course"
+        }
+    ],
+    createdCourses:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Course"
+        }
+    ],
 },{timestamps: true,versionKey: false});
 
 module.exports = mongoose.model("User", userSchema);

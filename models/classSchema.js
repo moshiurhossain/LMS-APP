@@ -16,6 +16,11 @@ const classSchema = new mongoose.Schema({
         ref: "Course",
         required: [true, "Course ID is required"]
     },    
+    slug:{
+      type:String,
+      required:[true,'Slug is required'],
+      unique:[true,'Slug must be unique']
+    },
 }, {timestamps: true, versionKey: false})
 
 module.exports = mongoose.model('Class', classSchema);
