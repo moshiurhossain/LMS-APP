@@ -139,7 +139,7 @@ const forgotPasswordController = asyncHandler(async (req,res)=>{
     // if the user does not exist, return an error response
     if(!existingUser) return apiResponse(res, 400, "User does not exist", null)
     // generate new otp and set reset link
-    const resetLink = 'http://localhost:3000/reset-password' 
+    const resetLink = 'http://localhost:5173/auth/resetpassword' 
     const forgetPasswordOtp = generateOtp()    
     // send the otp to the user's email
     sendEmail(email, 'Forgot Password', resetPasswordTemplate(existingUser.name, resetLink, forgetPasswordOtp, '10 minutes'))
