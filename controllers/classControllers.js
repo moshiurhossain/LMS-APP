@@ -4,7 +4,7 @@ const asyncHandler = require("../helpers/asyncHandler")
 // create class controller
 const createClassController = asyncHandler(async (req, res) => {
     // get the class data from request body
-     const  { name,videoUrl, courseId ,slug} = req.body
+    //  const  { name,videoUrl, courseId ,slug} = req.body
     // send a response with the class data 
     apiResponse(res, 200, "Create class controller", null)
 })

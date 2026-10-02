@@ -4,5 +4,7 @@ const router = express.Router();
 router.use("/auth", require("./auth"));
 // http://localhost:8080/api/v1/course
 router.use("/course",require('./course'))
+// http://localhost:8080/api/v1/class
+router.use('/class',require('./class'))
 
 module.exports = router;
