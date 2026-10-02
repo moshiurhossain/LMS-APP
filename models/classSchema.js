@@ -21,6 +21,11 @@ const classSchema = new mongoose.Schema({
       required:[true,'Slug is required'],
       unique:[true,'Slug must be unique']
     },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "Created by is required"]
+    },
 }, {timestamps: true, versionKey: false})
 
 module.exports = mongoose.model('Class', classSchema);

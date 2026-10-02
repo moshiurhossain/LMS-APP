@@ -30,7 +30,7 @@ const createCourseController = asyncHandler(async(req,res)=>{
     const updatedUser = await userSchema.findByIdAndUpdate(
         { _id: createdBy },
         { $push: { createdCourses: thiscourse._id } },
-        { new: true },
+        { returnDocument: "after" },
         
     )
 
