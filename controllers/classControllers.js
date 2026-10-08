@@ -7,7 +7,7 @@ const courseSchema = require("../models/courseSchema")
 // create class controller
 const createClassController = asyncHandler(async (req, res) => {
     // get the class data from request body
-     const  { name,videoUrl, courseId,createdBy } = req.body
+     const  { name,videoUrl, description, courseId,createdBy } = req.body
     //  const userId = req.user.id
     //  console.log('Request body:', userId, )
     // // send a response with the class data 

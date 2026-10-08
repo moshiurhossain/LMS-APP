@@ -1,17 +1,49 @@
-const jwt = require('jsonwebtoken')
+// const jwt = require('jsonwebtoken')
 
-const authorizemiddleware = (res, req, next) => {
-   const { accesstoken } = res.cookies
+// const authorizemiddleware = (req, res, next) => {
+//    const { accesstoken } = req.cookies
 
-   console.log(accesstoken)
+//    console.log(accesstoken)
 
-   const token = res.cookies.accesstoken
-   console.log(token)
-   const decode = jwt.verify(token,process.env.PRIVATE_KEY)
-   console.log(decode)
-   req.user = decode
+//    const token = req.cookies.accesstoken
+//    console.log(token)
+//    const decode = jwt.verify(token,process.env.PRIVATE_KEY)
+//    console.log(decode)
+//    res.user = decode
 
-   next()
-}
+//    next()
+// }
 
-module.exports = authorizemiddleware
+// module.exports = authorizemiddleware
+const jwt = require("jsonwebtoken");
+
+const authorizemiddleware = (req, res, next) => {
+    try {
+        const token = req.cookies.accesstoken;
+
+        console.log("TOKEN:", token);
+
+        const decode = jwt.verify(
+            token,
+            process.env.PRIVATE_KEY
+        );
+
+        console.log("DECODE:", decode);
+
+        req.user = decode;
+
+        console.log("REQ.USER FROM MIDDLEWARE:", req.user);
+
+        next();
+    } catch (error) {
+        console.log("AUTH ERROR:", error.message);
+
+        return res.status(401).json({
+            success: false,
+            message: error.message,
+            data: null
+        });
+    }
+};
+
+module.exports = authorizemiddleware;

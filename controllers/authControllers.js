@@ -181,11 +181,14 @@ const resetPasswordController = asyncHandler(async (req,res)=>{
 //////////////////////////////////////////////////////////
 // Get user controller
 const GetUserController = asyncHandler(async (req,res)=>{
-    // console.log("THIS IS USER ID",res.user.id)
-    // get user by id
-    const user = await userSchema.findById(res.user.id)
-    // return error if user not found
-    if(!user) return apiResponse(res,400,'user not found ')
+      console.log("USER FROM CONTROLLER:", req.user);
+
+    const user = await userSchema.findById(req.user.id);
+
+    if (!user) {
+        return apiResponse(res, 404, "User not found", null);
+    }
+
 
 
 

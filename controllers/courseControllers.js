@@ -8,6 +8,7 @@ const userSchema = require("../models/userSchema");
 const createCourseController = asyncHandler(async(req,res)=>{
     // get the course data from request body
     const {name,description,createdBy} = req.body
+   
     // check if the course already exists
     const existingCourse = await courseSchema.findOne({ name });
     if (existingCourse) {
@@ -42,7 +43,7 @@ const createCourseController = asyncHandler(async(req,res)=>{
 // get course controller
 const getCourseController = asyncHandler(async(req,res)=>{
     // get the course data from request body
-    const {courseId} = req.body
+    const {courseId} = req.query
     // find the course by courseId
     const course = await courseSchema.findById(courseId);
     // return a success response with the course
@@ -50,10 +51,13 @@ const getCourseController = asyncHandler(async(req,res)=>{
 })
 // get all course controller
 const getAllCourseController =asyncHandler(async(req,res)=>{
-    apiResponse(res,200,'All courses fetched successfully')
+    // send a response with all courses
+    const courses = await courseSchema.find();
+    apiResponse(res,200,'All courses fetched successfully', courses)
 })
 // edit course controller
 const editCourseController = asyncHandler(async(req,res)=>{
+
     apiResponse(res,200,'Courses edited successfully')
 })
 // delete course controller 
@@ -63,11 +67,20 @@ const deleteCourseController = asyncHandler(async(req,res)=>{
 // get course by creator controller
 const getCourseByCreatorController = asyncHandler(async(req,res)=>{
      
-    // res.user is set by the authorizeMiddleware, which contains the authenticated user's information
-    // find all courses created by the creatorId
-    const courses = await courseSchema.find({ createdBy: res.user.id });
-    // return a success response with the courses
-    apiResponse(res,200,'Courses fetched by creator successfully', courses)
+    console.log("REQ.USER IN CONTROLLER:", req.user);
+
+    const creatorId = req.user.id;
+
+    const courses = await courseSchema.find({
+        createdBy: creatorId
+    });
+
+    apiResponse(
+        res,
+        200,
+        "Courses fetched by creator successfully",
+        courses
+    );
 })
 // get subscribed courses controller
 const getSubscribedCoursesController = asyncHandler(async(req,res)=>{
@@ -75,6 +88,10 @@ const getSubscribedCoursesController = asyncHandler(async(req,res)=>{
     // find the user by userId and populate the suscribedCourses field
     const user = await userSchema.findById(res.user.id).populate('suscribedCourses');
     apiResponse(res,200,'Subscribed courses fetched successfully', user.suscribedCourses)
+})
+// const test course api contorller
+const testcourseController =asyncHandler(async(req,res)=>{
+    apiResponse(res,200,"test api successfull")
 })
 
 module.exports ={
@@ -85,4 +102,5 @@ module.exports ={
     deleteCourseController,
     getCourseByCreatorController,
     getSubscribedCoursesController,
+    testcourseController,
 }

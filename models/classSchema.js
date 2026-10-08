@@ -16,6 +16,10 @@ const classSchema = new mongoose.Schema({
         ref: "Course",
         required: [true, "Course ID is required"]
     },    
+    description:{
+       type:String,
+       default:null,
+    },
     slug:{
       type:String,
       required:[true,'Slug is required'],

@@ -31,7 +31,7 @@ const resetPasswordTemplate = (userName,token,expiryTime)=>{
           <!-- Button -->
           <tr>
             <td align="center" style="padding:20px 0;">
-              <a href="http://localhost:5173/auth/resetpassword" 
+              <a href="http://localhost:5173/resetpassword" 
                  style="background-color:#610D2C; color:#ffffff; text-decoration:none; padding:14px 28px; border-radius:6px; font-size:16px; display:inline-block;">
                  Reset Password
               </a>
