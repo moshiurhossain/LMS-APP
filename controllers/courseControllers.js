@@ -45,7 +45,7 @@ const getCourseController = asyncHandler(async(req,res)=>{
     // get the course data from request body
     const {courseId} = req.query
     // find the course by courseId
-    const course = await courseSchema.findById(courseId);
+    const course = await courseSchema.findById(courseId).populate('classes');
     // return a success response with the course
     apiResponse(res,200,'Course fetched successfully', course) 
 })
