@@ -8,7 +8,7 @@ router.post('/createclass',createClassController)
 // http://localhost:8080/api/v1/class/getcourseclasses
 router.get('/getcourseclasses',authorizemiddleware, getCourseClassesController)
 // http://localhost:8080/api/v1/class/deleteclass
-router.delete('/deleteclass',authorizemiddleware,deleteClassController)
+router.delete('/deleteclass/:classId',authorizemiddleware,deleteClassController)
 // http://localhost:8080/api/v1/class/updateclass
 router.patch('/updateclass',authorizemiddleware,updateClassController)
 module.exports = router;

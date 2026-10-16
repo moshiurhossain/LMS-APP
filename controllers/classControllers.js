@@ -47,6 +47,26 @@ const getCourseClassesController = asyncHandler(async (req, res) => {
 // delete class controller
 const deleteClassController = asyncHandler(async (req, res) => {
     // send a response with the class data 
+  const { classId } = req.params;
+
+    // Find the class
+    const classData = await classSchema.findById(classId);
+
+    if (!classData) {
+      return res.status(404).json({
+        success: false,
+        message: "Class not found",
+      });
+    }
+
+    // Remove the class ID from the related course
+    await courseSchema.findByIdAndUpdate(classData.courseId, {
+      $pull: { classes: classData._id },
+    });
+
+    // Delete the class document
+    await classSchema.findByIdAndDelete(classId);
+
     apiResponse(res, 200, "Delete class controller", null)
 })
 // update class controller
