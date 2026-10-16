@@ -71,7 +71,37 @@ const deleteClassController = asyncHandler(async (req, res) => {
 })
 // update class controller
 const updateClassController = asyncHandler(async (req, res) => {
-    // send a response with the class data 
+    const { classId } = req.params;
+    const { name, videoUrl, description } = req.body;
+     const existingClass = await classSchema.findById(classId)
+     if (!existingClass) return res.status(404).json({
+        success: false,
+        message: "Class not found",
+      });
+        // Update only the fields provided
+    if (name !== undefined) {
+      existingClass.name = name.trim();
+
+      // Update slug when the class name changes
+      existingClass.slug = `${name
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "")}-${Date.now()}`;
+    }
+
+    if (videoUrl !== undefined) {
+      existingClass.videoUrl = videoUrl;
+    }
+
+    if (description !== undefined) {
+      existingClass.description = description;
+    }
+
+    // Save changes
+    const updatedClass = await existingClass.save();
+
+    
     apiResponse(res, 200, "Update class controller", null)
 })
 /////////////////////////////////////////////////////////////////////////////////////////////////////
