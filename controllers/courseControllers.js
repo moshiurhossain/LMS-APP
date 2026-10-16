@@ -58,8 +58,52 @@ const getAllCourseController =asyncHandler(async(req,res)=>{
 })
 // edit course controller
 const editCourseController = asyncHandler(async(req,res)=>{
-   
-    apiResponse(res,200,'Courses edited successfully')
+    
+    const { courseId } = req.params;
+    const { name, description } = req.body;
+
+    // Validate course ID
+    if (!courseId) {
+      return res.status(400).json({
+        success: false,
+        message: "Course ID is required",
+      });
+    }
+   const course = await courseSchema.findById(courseId);
+    // Validate course 
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found",
+      });
+    }
+        // Update course name and slug
+    if (name !== undefined) {
+      if (!name.trim()) {
+        return res.status(400).json({
+          success: false,
+          message: "Course name cannot be empty",
+        });
+      }
+
+      course.name = name.trim();
+
+      course.slug = `${name
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "")}-${Date.now()}`;
+    }
+
+    // Update description
+    if (description !== undefined) {
+      course.description = description;
+    }
+
+    // Save updated course
+    const updatedCourse = await course.save();
+
+    apiResponse(res,200,'Courses edited successfully',updatedCourse)
 })
 // delete course controller 
 const deleteCourseController = asyncHandler(async(req,res)=>{

@@ -10,7 +10,7 @@ router.get('/getcourse',authorizemiddleware,getCourseController)
 // http://localhost:8080/api/v1/course/getallcourse
 router.get('/getallcourse',getAllCourseController)
 // http://localhost:8080/api/v1/course/editcourse
-router.patch('/editcourse',authorizemiddleware,editCourseController)
+router.put('/editcourse/:courseId',authorizemiddleware,editCourseController)
 // http://localhost:8080/api/v1/course/deletecourse
 router.delete('/deletecourse/:courseId',authorizemiddleware,deleteCourseController)
 // http://localhost:8080/api/v1/course/getsubscribedcourses
