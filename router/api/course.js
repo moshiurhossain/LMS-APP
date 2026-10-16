@@ -12,7 +12,7 @@ router.get('/getallcourse',getAllCourseController)
 // http://localhost:8080/api/v1/course/editcourse
 router.patch('/editcourse',authorizemiddleware,editCourseController)
 // http://localhost:8080/api/v1/course/deletecourse
-router.delete('/deletecourse',authorizemiddleware,deleteCourseController)
+router.delete('/deletecourse/:courseId',authorizemiddleware,deleteCourseController)
 // http://localhost:8080/api/v1/course/getsubscribedcourses
 router.get('/getsubscribedcourses', authorizemiddleware, getSubscribedCoursesController)
 // http://localhost:8080/api/v1/course/getcoursebycreator
