@@ -3,6 +3,7 @@ const asyncHandler = require("../helpers/asyncHandler");
 const slugGenerator = require("../helpers/slugGenerator");
 const courseSchema = require("../models/courseSchema");
 const userSchema = require("../models/userSchema");
+const classSchema = require('../models/classSchema')
 
 // create course conroller
 const createCourseController = asyncHandler(async(req,res)=>{
@@ -57,11 +58,23 @@ const getAllCourseController =asyncHandler(async(req,res)=>{
 })
 // edit course controller
 const editCourseController = asyncHandler(async(req,res)=>{
-
+   
     apiResponse(res,200,'Courses edited successfully')
 })
 // delete course controller 
 const deleteCourseController = asyncHandler(async(req,res)=>{
+    const {courseId} = req.params
+    const course = await courseSchema.findById(courseId)
+    if(!course) return apiResponse(res,400,'course not found')
+    const deleteClasses = await classSchema.deleteMany({
+           $or: [
+        { courseId: course._id },
+        { _id: { $in: course.classes } },
+      ],
+     })   
+     await course.deleteOne();
+     
+
     apiResponse(res,200,'Courses deleted successfully')
 })
 // get course by creator controller
